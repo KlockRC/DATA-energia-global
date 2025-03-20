@@ -1,3 +1,7 @@
 .oi/
 .git/
 db/
+.gitignore
+kestra/
+.terraform.lock.hcl
+.terraform/

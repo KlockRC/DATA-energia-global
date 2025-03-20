@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = /home/cesar/cre.txt
-  project     = "my-project-id"
+  credentials = "/home/cesar/cre.json"
+  project     = "data-energia-global"
   region      = "us-central1"
 }

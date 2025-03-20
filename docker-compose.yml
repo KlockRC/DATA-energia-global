@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      POSTGRES_PASSWORD: GlobE
       POSTGRES_DB: energia_glob
     ports:
       - "5432:5432"
@@ -14,16 +14,47 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - teste-net
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    restart: always
+  kestra:
+    image: kestra/kestra:latest
+    pull_policy: always
+    user: "root"
+    command: server standalone
+    volumes:
+      - kestra-data:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/kestra-wd:/tmp/kestra-wd
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      KESTRA_CONFIGURATION: |
+        datasources:
+          postgres:
+            url: jdbc:postgresql://postgres:5432/energia_glob
+            driverClassName: org.postgresql.Driver
+            username: root
+            password: GlobE
+        kestra:
+          server:
+            basicAuth:
+              enabled: false
+              username: "admin@localhost.dev" 
+              password: GlobE
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              basePath: "/app/storage"
+          queue:
+            type: postgres
+          tasks:
+            tmpDir:
+              path: /tmp/kestra-wd/tmp
+          url: http://localhost:8080/
     ports:
-      - "8080:80"
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_started
     networks:
       - teste-net
 
@@ -34,6 +65,13 @@ volumes:
       type: none
       device: /home/cesar/panda/db
       o: bind
+  kestra-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/cesar/panda/kestra
+      o: bind
+
 
 networks:
   teste-net:
