@@ -5,3 +5,7 @@ db/
 kestra/
 .terraform.lock.hcl
 .terraform/
+plugins/
+logs/
+dags/
+config/
