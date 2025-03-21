@@ -32,7 +32,6 @@ df_clean = df_clean[df_clean["Year"] > 1999]
 df_clean = df_clean.round(4)
 
 pd.io.sql.get_schema(df_clean, name="energia_global",con=engine)
-df_clean.head(n=0).to_sql(name="Silver_Data", con=engine, if_exists='append')
 df_clean.to_csv("SRC/DATA/Silver.csv", index=False)
 parte = pd.read_csv('SRC/DATA/Silver.csv', iterator=True, chunksize=1000 )
 
