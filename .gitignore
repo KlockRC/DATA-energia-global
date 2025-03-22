@@ -9,3 +9,5 @@ plugins/
 logs/
 dags/
 config/
+repo.txt
+etl/__pycache__/
