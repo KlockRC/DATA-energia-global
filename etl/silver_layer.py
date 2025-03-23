@@ -1,29 +1,14 @@
 import pandas as pd # type: ignore
 from time import time
 
-def limpesa_insercao_dados_silver(engine):
+def limpesa_insercao_dados_silver(engine, columns_to_fill, replace_dict, collumns_to_check):
     df_clean = pd.read_sql_table('Bronze_Data', con=engine)
     df_clean = df_clean.drop_duplicates()
     
     df_clean.columns = df_clean.columns.str.replace('/', '-', regex=False)
     df_clean.columns = df_clean.columns.str.replace(' ', '_')
 
-    replace_dict = {'@': 'a', '&': 'e'}
-    columns_to_fill = [
-        'Total_Energy_Consumption_(TWh)',
-        'Per_Capita_Energy_Use_(kWh)',
-        'Renewable_Energy_Share_(%)',
-        'Fossil_Fuel_Dependency_(%)',
-        'Industrial_Energy_Use_(%)',
-        'Household_Energy_Use_(%)',
-        'Carbon_Emissions_(Million_Tons)',
-        'Energy_Price_Index_(USD-kWh)'
-    ]
 
-    collumns_to_check = [
-        'Renewable_Energy_Share_(%)',
-        'Household_Energy_Use_(%)'
-    ]
     df_clean['Country'] = df_clean['Country'].replace(replace_dict, regex=True)
     for col in columns_to_fill:
         df_clean[col] = df_clean.groupby("Country")[col].transform(lambda x: x.fillna(x.median()))

@@ -1,19 +1,8 @@
 import pandas as pd # type: ignore
 from time import time
 
-columns_to_fill = [
-        'Total_Energy_Consumption_(TWh)',
-        'Per_Capita_Energy_Use_(kWh)',
-        'Renewable_Energy_Share_(%)',
-        'Fossil_Fuel_Dependency_(%)',
-        'Industrial_Energy_Use_(%)',
-        'Household_Energy_Use_(%)',
-        'Carbon_Emissions_(Million_Tons)',
-        'Energy_Price_Index_(USD-kWh)'
-    ]
 
-
-def trasformacao_insercao_dados_gold(engine):
+def trasformacao_insercao_dados_gold(engine, columns_to_fill ):
     t_start = time()
     df_gold = pd.read_sql_table('Silver_Data', con=engine)
     for col in columns_to_fill:
