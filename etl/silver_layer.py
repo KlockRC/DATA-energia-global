@@ -14,12 +14,14 @@ def limpesa_insercao_dados_silver(engine, columns_to_fill, replace_dict, collumn
         df_clean[col] = df_clean.groupby("Country")[col].transform(lambda x: x.fillna(x.median()))
     for col in collumns_to_check:
         df_clean[col] = df_clean[col].clip(0, 100)
+
+    #arquivos separados
     df_clean = df_clean.groupby([ "Country","Year"])[columns_to_fill].mean().reset_index()
     df_clean = df_clean[df_clean["Fossil_Fuel_Dependency_(%)"].between(0, 100)]
     df_clean = df_clean[df_clean["Year"] > 1999]
     df_clean = df_clean.round(4)
-    df_clean.to_csv("SRC/DATA/SILVER/Silver.csv", index=False)
-    df_clean.to_sql(name='Silver_Data', con=engine, if_exists='append')
+    df_clean.to_csv("SRC/DATA/SILVER/Silver.csv", index=True)
+    df_clean.to_sql(name='Silver_Data', con=engine, if_exists='append', index=True)
     unico = df_clean['Country'].unique()
     for uni in unico:
         df = df_clean.groupby("Country").get_group(uni).reset_index()
