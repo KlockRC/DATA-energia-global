@@ -2,6 +2,9 @@
 
 Este projeto implementa uma pipeline de ETL (Extração, Transformação e Carga) utilizando o **Apache Airflow** para orquestrar as tarefas, **Docker** para containerização, e **AWS S3** para armazenamento de dados. A pipeline realiza a coleta de dados, limpeza, transformação e armazenamento em um banco de dados PostgreSQL.
 
+![Image](https://github.com/user-attachments/assets/558f79bb-fdd9-4de7-8969-5992737a3e53)
+![Image](https://github.com/user-attachments/assets/ad50eb45-9bd3-45fd-ac8d-4c44204e1227)
+
 ## Arquitetura
 
 A arquitetura é composta por três camadas principais:
