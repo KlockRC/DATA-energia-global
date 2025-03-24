@@ -13,3 +13,5 @@ def bronze_inserir_no_db(engine):
         except StopIteration:
             print("fim dos dados")
             break
+
+

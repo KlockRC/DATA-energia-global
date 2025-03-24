@@ -1,7 +1,7 @@
-from sqlalchemy import create_engine  # type: ignore
-from etl import bronze_layer as bronze
-from etl import silver_layer as silver
-from etl import gold_layer as gold
+import psycopg2 
+from etl_demostrativo import bronze_layer as bronze
+from etl_demostrativo import silver_layer as silver
+from etl_demostrativo import gold_layer as gold
 
 columns_to_fill = [
         'Total_Energy_Consumption_(TWh)',
@@ -20,9 +20,13 @@ collumns_to_check = [
         'Household_Energy_Use_(%)'
     ]
 
-endpoint = 'postgresql://root:GlobE@localhost:5433/energia_glob'
-
-engine = create_engine(endpoint)
+engine = psycopg2.connect(
+    dbname="energia_glob",
+    user="root",
+    password="GlobE",
+    host="localhost",
+    port="5433"
+)
 
 print('iniciando camada bronze')
  
