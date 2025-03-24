@@ -1,9 +1,15 @@
 import pandas  # type: ignore
 from time import time
 from sqlalchemy import create_engine  # type: ignore
-
-
-endpoint = "postgresql://airflow:airflow@postAirDB:5432/airflow"
+import os
+# Obtenha as variáveis de ambiente do docker-compose
+DB_USER = os.environ.get("POSTGRES_USER")
+DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
+DB_HOST = os.environ.get("POSTGRES_HOST")
+DB_PORT = os.environ.get("POSTGRES_PORT")
+DB_NAME = os.environ.get("POSTGRES_DB")
+CSV = os.environ.get("CSV_S3")
+endpoint = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 columns_to_fill = [
         'Total_Energy_Consumption_(TWh)',
@@ -25,9 +31,17 @@ collumns_to_check = [
 engine = create_engine(endpoint)
 
 def bronze_inserir_no_db():  
-    df = pandas.read_sql_table('tese_data', con=engine)
-    df.to_sql(name='Bronze_Data', con=engine, if_exists='append')
-    print("fim dos dados")
+    parte = pandas.read_csv(CSV, storage_options={"anon": True}, iterator=True, chunksize=1000 )
+    while True:
+        try:
+            t_start = time()
+            df = next(parte)
+            df.to_sql(name='tese_data', con=engine, if_exists='append')
+            t_end = time()
+            print('uma parte levou %.3f segundos' % (t_end - t_start))
+        except StopIteration:
+            print("fim dos dados")
+            break
       
 
 def silver_limpesa_insercao_dados_silver():

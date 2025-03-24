@@ -1,27 +1,10 @@
 version: '3.9'
 services:
-  banco_teste:
-    image: postgres:latest
-    container_name: banco_teste
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: GlobE
-      POSTGRES_DB: energia_glob
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data_info:/var/lib/postgresql/data
-    networks:
-      - teste-net
-
   postAirDB:
     image: postgres:16
     container_name: postAirDB
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+    env_file:
+      ./variaveis.env
     ports:
       - "5432:5432"
     volumes:
@@ -44,12 +27,9 @@ services:
 
 
   airflow-webserver:
-    image: apache/airflow:2.10.5
-    environment:
-      AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    image: Airflow_Mod:latest
+    env_file:
+      ./variaveis.env
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -67,12 +47,9 @@ services:
       - airflow
 
   airflow-scheduler:
-    image: apache/airflow:2.10.5
-    environment:
-      AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    image: Airflow_Mod:latest
+    env_file:
+      ./variaveis.env
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -87,12 +64,9 @@ services:
       - airflow
 
   airflow-worker:
-    image: apache/airflow:2.10.5
-    environment:
-      AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    image: Airflow_Mod:latest
+    env_file:
+      ./variaveis.env
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -107,18 +81,15 @@ services:
       - airflow
 
   airflow-init:
-    image: apache/airflow:2.10.5
+    image: Airflow_Mod:latest
     entrypoint: /bin/bash
     command:
       - -c
       - |
         airflow db init
         exec airflow webserver
-    environment:
-      AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postAirDB/airflow
-      AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    env_file:
+      -  ./variaveis.env
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -136,7 +107,5 @@ volumes:
   postgres-data:
 
 networks:
-  teste-net:
-    driver: bridge
   airflow:
     driver: bridge

@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime
 import pandas as pd
 from etl import etl

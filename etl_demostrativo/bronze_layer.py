@@ -2,7 +2,7 @@ import pandas as pd  # type: ignore
 from time import time
 
 def bronze_inserir_no_db(engine):
-    parte = pd.read_csv('SRC/DATA/energiaGlob.csv', iterator=True, chunksize=1000 )
+    parte = pd.read_csv('s3://data-energia-global/energiaGlob.csv', storage_options={"anon": True}, iterator=True, chunksize=1000 )
     while True:
         try:
             t_start = time()
