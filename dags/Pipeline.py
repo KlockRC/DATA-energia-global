@@ -1,7 +1,8 @@
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import PythonVirtualenvOperator
+from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
 from datetime import datetime
+import pandas as pd
 from etl import etl
 
 default_args = {
@@ -23,24 +24,28 @@ Inicio = EmptyOperator(
     dag=dag
 )
 
-task_bronze = PythonVirtualenvOperator(
+task_bronze = PythonOperator(
     task_id="bronze_layer",
-    requirements=["sqlalchemy<2.0,>=1.4.36", "pandas==2.1.4"], # Changed pandas version
+    #requirements=["sqlalchemy<2.0,>=1.4.36", "pandas==2.2.3", "panda==0.3.1"],
     python_callable=etl.bronze_inserir_no_db,
+    #op_kwargs={'pd': pd},
+    #system_site_packages=False,
     dag=dag
 )
 
-task_silver = PythonVirtualenvOperator(
+task_silver = PythonOperator(
     task_id="silver_layer",
-    requirements=["sqlalchemy<2.0,>=1.4.36", "pandas==2.1.4"], # Changed pandas version
+    #requirements=["sqlalchemy<2.0,>=1.4.36", "pandas==2.2.3", "panda==0.3.1"],
     python_callable=etl.silver_limpesa_insercao_dados_silver,
+    #system_site_packages=False,
     dag=dag
 )
 
-task_gold = PythonVirtualenvOperator(
+task_gold = PythonOperator(
     task_id="gold_layer",
-    requirements=["sqlalchemy<2.0,>=1.4.36", "pandas==2.1.4"], # Changed pandas version
+    #requirements=["sqlalchemy<2.0,>=1.4.36", "pandas==2.2.3", "panda==0.3.1"],
     python_callable=etl.gold_trasformacao_insercao_dados_gold,
+    #system_site_packages=False,
     dag=dag
 )
 

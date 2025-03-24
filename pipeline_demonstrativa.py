@@ -1,4 +1,4 @@
-import psycopg2 
+from sqlalchemy import create_engine
 from etl_demostrativo import bronze_layer as bronze
 from etl_demostrativo import silver_layer as silver
 from etl_demostrativo import gold_layer as gold
@@ -19,14 +19,8 @@ collumns_to_check = [
         'Renewable_Energy_Share_(%)',
         'Household_Energy_Use_(%)'
     ]
+engine = create_engine("postgresql://airflow:airflow@localhost:5432/airflow")
 
-engine = psycopg2.connect(
-    dbname="energia_glob",
-    user="root",
-    password="GlobE",
-    host="localhost",
-    port="5433"
-)
 
 print('iniciando camada bronze')
  
@@ -34,10 +28,10 @@ bronze.bronze_inserir_no_db(engine)
 
 print('iniciando camada silver')
 
-silver.limpesa_insercao_dados_silver(engine, columns_to_fill, replace_dict, collumns_to_check)
+#silver.limpesa_insercao_dados_silver(engine, columns_to_fill, replace_dict, collumns_to_check)
 
 print('iniciando camada gold')
 
-gold.trasformacao_insercao_dados_gold(engine, columns_to_fill)
+#gold.trasformacao_insercao_dados_gold(engine, columns_to_fill)
 
 #comentario legal

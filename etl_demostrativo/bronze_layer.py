@@ -7,7 +7,7 @@ def bronze_inserir_no_db(engine):
         try:
             t_start = time()
             df = next(parte)
-            df.to_sql(name='Bronze_Data', con=engine, if_exists='append')
+            df.to_sql(name='tese_data', con=engine, if_exists='append')
             t_end = time()
             print('uma parte levou %.3f segundos' % (t_end - t_start))
         except StopIteration:
